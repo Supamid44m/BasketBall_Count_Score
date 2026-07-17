@@ -20,7 +20,7 @@ export default function RootLayout() {
   return (
     <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
       <GameSetupProvider>
-        <Stack screenOptions={{ headerShown: true }}>
+        <Stack screenOptions={{ headerShown: false }}>
           <Stack.Screen name="game" options={{ headerShown: false }} />
         </Stack>
         <StatusBar style="auto" />

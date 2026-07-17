@@ -1,7 +1,8 @@
+import PauseMenu from "@/components/PauseMenu";
 import PressScore from "@/components/PressScore";
 import { useGameSetup } from "@/context/GameSetupContext";
 import { useEffect, useState } from "react";
-import { StyleSheet, View } from "react-native";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 
 export default function ThreeVThreeScreen() {
   const { match } = useGameSetup();
@@ -9,6 +10,8 @@ export default function ThreeVThreeScreen() {
   const teamBPlayers = match?.teams[1]?.players || [];
   const [scoreA, setScoreA] = useState(0);
   const [scoreB, setScoreB] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
+  const [isEnd, setIsEnd] = useState(false);
   // const [matchScore, setMatchScore] = useState({ teamA: 0, teamB: 0 });
 
   function increaseScore(team: string) {
@@ -32,6 +35,7 @@ export default function ThreeVThreeScreen() {
     console.log(`teamBScore+${teamBscore}`);
 
     if (teamAscore == matchScore || teamBscore == matchScore) {
+      setIsEnd(true);
       console.log("result", JSON.stringify(match));
       Rematch();
     }
@@ -48,6 +52,7 @@ export default function ThreeVThreeScreen() {
   }
 
   function Rematch() {
+    setIsEnd(false);
     setScoreA(0);
     setScoreB(0);
     match.teams[0].score = 0;
@@ -73,9 +78,24 @@ export default function ThreeVThreeScreen() {
               increasePlayerScore(team as string, playerIndex as number)
             }
             score={scoreA}
-            team={teamAPlayers}
+            players={teamAPlayers}
           />
         </View>
+
+        {/* pause menu */}
+
+        <Pressable style={styles.pauseButton} onPress={() => setIsPaused(true)}>
+          <Text style={styles.pauseButtonText}>II</Text>
+        </Pressable>
+
+        <PauseMenu
+          visible={isPaused}
+          onResume={() => setIsPaused(false)}
+          onRematch={() => {
+            Rematch();
+            setIsPaused(false);
+          }}
+        />
 
         {/* Team B */}
         <View style={styles.teamBContainer}>
@@ -86,7 +106,7 @@ export default function ThreeVThreeScreen() {
               increasePlayerScore(team as string, playerIndex as number)
             }
             score={scoreB}
-            team={teamBPlayers}
+            players={teamBPlayers}
           />
         </View>
       </View>
@@ -116,5 +136,23 @@ const styles = StyleSheet.create({
     width: "100%",
     flexDirection: "column",
     backgroundColor: "#ffffff",
+  },
+  pauseButton: {
+    position: "absolute",
+    top: 16,
+    left: "50%",
+    marginLeft: -20,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: "rgba(255, 255, 255, 0.15)",
+    justifyContent: "center",
+    alignItems: "center",
+    zIndex: 5,
+  },
+  pauseButtonText: {
+    color: "#ffffff",
+    fontSize: 16,
+    fontWeight: "700",
   },
 });

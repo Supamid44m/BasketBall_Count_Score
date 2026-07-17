@@ -1,7 +1,7 @@
 import { Player } from "@/constants/interface/Player";
 import { createPlayer } from "@/utils/matchUtils";
 import { useState } from "react";
-import { Pressable, Text, View } from "react-native";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 import PlayerInput from "./PlayerInput";
 
 type Props = {
@@ -12,15 +12,26 @@ type Props = {
 
 export default function TeamForm({ teamName, playerCount, onSubmit }: Props) {
   const [players, setPlayers] = useState<string[]>(Array(playerCount).fill(""));
+  const [error, setError] = useState("");
 
   const handleChange = (index: number, value: string) => {
     const updated = [...players];
     updated[index] = value;
     setPlayers(updated);
+    if (error) setError("");
+  };
+
+  const handleSubmit = () => {
+    // if (players.some((player) => !validateTeamPlayers(player))) {
+    //   setError("All player names are required.");
+    //   return;
+    // }
+    setError("");
+    onSubmit(players.map((player) => createPlayer(player)));
   };
 
   return (
-    <View>
+    <View style={null}>
       <Text style={{ fontSize: 18, fontWeight: "bold" }}>{teamName}</Text>
 
       {players.map((player, index) => (
@@ -31,9 +42,9 @@ export default function TeamForm({ teamName, playerCount, onSubmit }: Props) {
           placeholder={`Player ${index + 1}`}
         />
       ))}
-
+      {error && <Text style={styles.errorText}>{error}</Text>}
       <Pressable
-        onPress={() => onSubmit(players.map((player) => createPlayer(player)))}
+        onPress={handleSubmit}
         style={{
           backgroundColor: "#22c55e",
           padding: 16,
@@ -50,3 +61,6 @@ export default function TeamForm({ teamName, playerCount, onSubmit }: Props) {
     </View>
   );
 }
+const styles = StyleSheet.create({
+  errorText: { color: "red", marginBottom: 15, fontSize: 14 },
+});

@@ -12,7 +12,7 @@ interface Props {
   increaseScore: (team?: string) => void;
   increasePlayerScore: (team: string, playerIndex: number) => void;
   score: number;
-  team: Player[];
+  players: Player[];
   teamSide: string;
 }
 
@@ -20,7 +20,7 @@ export default function PressScore({
   increaseScore,
   increasePlayerScore,
   score,
-  team,
+  players,
   teamSide,
 }: Props) {
   const [teamSideState, setTeamSideState] = useState<string>(teamSide);
@@ -38,7 +38,7 @@ export default function PressScore({
 
       <View style={styles.playersArea}>
         <View style={styles.topPlayerRow}>
-          {team[0] && (
+          {players[0] && (
             <Pressable
               style={({ pressed }) => [
                 styles.playerButton,
@@ -47,13 +47,13 @@ export default function PressScore({
               onPress={() => increasePlayerScore(teamSide as string, 0)}
             >
               <Text style={[styles.playerName, { color: textColor }]}>
-                {team[0].name}
+                {players[0].name}
               </Text>
             </Pressable>
           )}
         </View>
         <View style={styles.bottomPlayerRow}>
-          {team.slice(1).map((player) => (
+          {players.slice(1).map((player) => (
             <Pressable
               key={player.id}
               style={({ pressed }) => [
@@ -61,7 +61,7 @@ export default function PressScore({
                 pressed && styles.playerButtonPressed,
               ]}
               onPress={() =>
-                increasePlayerScore(teamSide as string, team.indexOf(player))
+                increasePlayerScore(teamSide as string, players.indexOf(player))
               }
             >
               <Text style={[styles.playerName, { color: textColor }]}>
