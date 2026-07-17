@@ -1,5 +1,5 @@
 import { Player } from "@/constants/interface/Player";
-import { createPlayer } from "@/utils/matchUtils";
+import { createPlayer, validateTeamPlayers } from "@/utils/matchUtils";
 import { useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import PlayerInput from "./PlayerInput";
@@ -22,10 +22,10 @@ export default function TeamForm({ teamName, playerCount, onSubmit }: Props) {
   };
 
   const handleSubmit = () => {
-    // if (players.some((player) => !validateTeamPlayers(player))) {
-    //   setError("All player names are required.");
-    //   return;
-    // }
+    if (players.some((player) => !validateTeamPlayers(player))) {
+      setError("All player names are required.");
+      return;
+    }
     setError("");
     onSubmit(players.map((player) => createPlayer(player)));
   };
