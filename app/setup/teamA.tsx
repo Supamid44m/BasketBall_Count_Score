@@ -8,7 +8,41 @@ import { Pressable, StyleSheet, View } from "react-native";
 
 export default function TeamAScreen() {
   const router = useRouter();
-  const { setTeamAPlayers, setTeamA, mode, setMode } = useGameSetup();
+  const {
+    setTeamAPlayers,
+    setTeamA,
+    mode,
+    setMode,
+    setIsQuickMode,
+    setTeamB,
+    setTeamBPlayers,
+  } = useGameSetup();
+
+  function handleQuickMode() {
+    setTeamAPlayers([]);
+    setTeamBPlayers([]);
+    setIsQuickMode(true);
+    setUpQuickModeTeam();
+    router.push("/setup/matchpoint");
+  }
+
+  function setUpQuickModeTeam() {
+    setTeamB({
+      id: generateTeamId(),
+      name: "Team B",
+      players: [],
+      playerScores: [],
+      score: 0,
+    });
+
+    setTeamA({
+      id: generateTeamId(),
+      name: "Team A",
+      players: [],
+      playerScores: [],
+      score: 0,
+    });
+  }
 
   useEffect(() => {
     console.log("mode", mode);
@@ -34,6 +68,22 @@ export default function TeamAScreen() {
           router.push("/setup/teamB");
         }}
       />
+
+      <Pressable
+        onPress={handleQuickMode}
+        style={{
+          backgroundColor: "#22c55e",
+          padding: 16,
+          marginTop: 20,
+          borderRadius: 12,
+        }}
+      >
+        <Text
+          style={{ color: "white", textAlign: "center", fontWeight: "bold" }}
+        >
+          Start with Quick Mode
+        </Text>
+      </Pressable>
       <Pressable
         onPress={() => {
           setMode(null);

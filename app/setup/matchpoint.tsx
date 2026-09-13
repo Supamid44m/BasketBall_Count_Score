@@ -6,11 +6,13 @@ import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 
 export default function MatchPointScreen() {
   const [point, setPoint] = useState("21");
+  const [error, setError] = useState(false);
   const { setMatchPoint, teamA, teamB, setMatch, mode } = useGameSetup();
   const router = useRouter();
 
   function createGame() {
     if (!teamA || !teamB) return;
+    if (error) return;
     const matchPoint = Number(point);
     const newMatch: MatchGame = {
       id: Date.now().toString(),
@@ -20,7 +22,25 @@ export default function MatchPointScreen() {
     };
     setMatchPoint(matchPoint);
     setMatch(newMatch);
-    router.push("/game/rotate");
+    router.push(mode === "5v5" ? "/game/5v5" : "/game/3v3");
+  }
+
+  function handleInputScore(value: string) {
+    const cleanValue = value.replace(/[^0-9]/g, "");
+    const parsedValue = parseInt(cleanValue, 10);
+
+    if (
+      cleanValue === "" ||
+      (!isNaN(parsedValue) && parsedValue <= 0) ||
+      cleanValue.startsWith("0")
+    ) {
+      setError(true);
+      setPoint(cleanValue);
+      return;
+    }
+
+    setError(false);
+    setPoint(cleanValue);
   }
 
   return (
@@ -29,10 +49,16 @@ export default function MatchPointScreen() {
 
       <TextInput
         value={point}
-        onChangeText={setPoint}
+        onChangeText={(value) => handleInputScore(value)}
         keyboardType="numeric"
         style={styles.input}
       />
+
+      {error && (
+        <Text style={{ color: "red", fontSize: 16 }}>
+          Point should more than 0{" "}
+        </Text>
+      )}
 
       <Pressable style={styles.button} onPress={createGame}>
         <Text style={styles.buttonText}>Start Game</Text>

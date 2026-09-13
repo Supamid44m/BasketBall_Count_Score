@@ -1,3 +1,5 @@
+import { router } from "expo-router";
+import * as ScreenOrientation from "expo-screen-orientation";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
 interface PauseMenuProps {
@@ -13,6 +15,13 @@ export default function PauseMenu({
 }: PauseMenuProps) {
   if (!visible) return null;
 
+  function handleMainMenu() {
+    router.dismissAll();
+    router.replace("/");
+
+    ScreenOrientation.unlockAsync().catch(() => {});
+  }
+
   return (
     <View style={styles.overlay}>
       <View style={styles.card}>
@@ -27,6 +36,13 @@ export default function PauseMenu({
           onPress={onRematch}
         >
           <Text style={styles.buttonText}>Rematch</Text>
+        </Pressable>
+
+        <Pressable
+          style={[styles.button, styles.mainMenuButton]}
+          onPress={handleMainMenu}
+        >
+          <Text style={styles.buttonText}>Main Menu</Text>
         </Pressable>
       </View>
     </View>
@@ -75,5 +91,8 @@ const styles = StyleSheet.create({
     color: "#ffffff",
     fontSize: 16,
     fontWeight: "600",
+  },
+  mainMenuButton: {
+    backgroundColor: "#da0b0b",
   },
 });

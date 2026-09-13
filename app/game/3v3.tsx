@@ -1,11 +1,12 @@
 import PauseMenu from "@/components/PauseMenu";
 import PressScore from "@/components/PressScore";
 import { useGameSetup } from "@/context/GameSetupContext";
+import * as ScreenOrientation from "expo-screen-orientation";
 import { useEffect, useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
 export default function ThreeVThreeScreen() {
-  const { match } = useGameSetup();
+  const { match, isQuickMode } = useGameSetup();
   const teamAPlayers = match?.teams[0]?.players || [];
   const teamBPlayers = match?.teams[1]?.players || [];
   const [scoreA, setScoreA] = useState(0);
@@ -62,8 +63,13 @@ export default function ThreeVThreeScreen() {
   }
 
   useEffect(() => {
-    console.log("3v3 screen mounted");
-    console.log("Match data:", match);
+    ScreenOrientation.lockAsync(
+      ScreenOrientation.OrientationLock.LANDSCAPE,
+    ).catch((err) => console.warn("Failed to lock landscape:", err));
+
+    return () => {
+      ScreenOrientation.unlockAsync().catch(() => {});
+    };
   }, []);
 
   return (

@@ -11,6 +11,7 @@ type GameSetup = {
   teamB: Team | null;
   matchPoint: number;
   match: MatchGame;
+  isQuickMode: boolean;
 
   setMode: (mode: string | null) => void;
   setTeamAPlayers: (data: Player[]) => void;
@@ -19,6 +20,7 @@ type GameSetup = {
   setTeamB: (team: Team) => void;
   setMatchPoint: (point: number) => void;
   setMatch: (match: MatchGame) => void;
+  setIsQuickMode: (isQuickMode: boolean) => void;
 };
 
 const GameSetupContext = createContext<GameSetup | null>(null);
@@ -36,6 +38,7 @@ export function GameSetupProvider({ children }: any) {
     matchpoint: 21,
     matchDate: new Date().toISOString(),
   });
+  const [isQuickMode, setIsQuickMode] = useState(false);
 
   return (
     <GameSetupContext.Provider
@@ -47,6 +50,7 @@ export function GameSetupProvider({ children }: any) {
         teamB,
         matchPoint,
         match,
+        isQuickMode,
         setMode,
         setTeamAPlayers,
         setTeamBPlayers,
@@ -54,6 +58,7 @@ export function GameSetupProvider({ children }: any) {
         setTeamB,
         setMatchPoint,
         setMatch,
+        setIsQuickMode,
       }}
     >
       {children}
